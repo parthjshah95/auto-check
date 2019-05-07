@@ -11,16 +11,26 @@
     <loading :active.sync="isLoading" 
     :can-cancel="false" 
     :is-full-page="fullPage"></loading>
+    <div class="m-5 ml-10 mr-10">
+      <h5>Automatic checking of answer papers</h5>
+      The Auto-assessor can automatically evaluate a student's answer paper through <br> <b>handwriting recognition</b> and a dynamic knowledge base. 
+    </div>
     <div class="card m-4 flex-row flex-wrap">
       <div class="card-header w-100">
-        <h4 class="card-title">What is history?</h4>
+        <h4 class="m-0">Try it out!</h4>
       </div>
-      <div class="card-block flex-col card-img">
+
+      <div class="card-block flex-col card-img col-md-8 col-lg-5">
         <img v-bind:src="demo_image" class="card-img" alt="image not found">
         <button class="w-100 btn btn-primary" v-on:click="test_image()">Submit image as answer</button>
       </div>
 
-      <div class="card-body p-3 flex-fill">
+      <div class="card-block p-3 flex-col flex-fill col-md-4 col-lg-7">
+        <!-- flex-wrap col-sm-3 col-md-4 col-lg-6 -->
+        Submit the image to see whether the answer is correct.
+        <hr>
+        <h6>Expected answer:</h6>
+        "History is a coherent account of the significant past events in the progress of human culture."
       </div>
       
     </div>
@@ -101,7 +111,5 @@ export default {
 nav {
   color: white;
 }
-.card-img{
-  width: 30rem;
-}
+
 </style>
