@@ -22,15 +22,19 @@
 
       <div class="card-block flex-col card-img col-md-8 col-lg-5">
         <img v-bind:src="demo_image" class="card-img" alt="image not found">
-        <button class="w-100 btn btn-primary" v-on:click="test_image()">Submit image as answer</button>
+        <button class="w-100 btn btn-primary" v-on:click="test_image(demo_image)">Submit image as answer</button>
       </div>
 
       <div class="card-block p-3 flex-col flex-fill col-md-4 col-lg-7">
         <!-- flex-wrap col-sm-3 col-md-4 col-lg-6 -->
         Submit the image to see whether the answer is correct.
         <hr>
-        <h6>Expected answer:</h6>
+        <h5>Expected answer:</h5>
         "History is a coherent account of the significant past events in the progress of human culture."
+        <div v-if="results.card_1">
+          <h5 class="mt-3">We found following words in your answer:</h5>
+          {{results.card_1}}
+        </div>
       </div>
       
     </div>
@@ -54,13 +58,15 @@ export default {
       demo_image : demo_image,
       isLoading: false,
       fullPage: true,
-      demo_answer: true
+      results:{
+        card_1 : null
+      }
     }
   },
   methods:{
-    test_image(){
+    test_image(image){
       this.isLoading = true
-      this.$image2base64(this.demo_image)
+      this.$image2base64(image)
       .then(
           (response) => {
               var base64Image = response
@@ -75,6 +81,7 @@ export default {
                 },
                 function error(e){
                   console.error(e)
+                  alert('sorry, something went wrong')
                   this.isLoading = false
                 }
               )

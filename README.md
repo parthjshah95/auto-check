@@ -15,7 +15,7 @@ npm run serve
 npm run build
 ```
 
-### Deploy to production after build
+### Deploy to production
 ```
 npm run deploy
 ```
