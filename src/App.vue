@@ -60,10 +60,18 @@ export default {
       fullPage: true,
       results:{
         card_1 : null
+      },
+      endpoints: {
+        heartbeat: "/heartbeat",
+        assessImage: "/assessImage",
+        addTemplate:"/addTemplate"
       }
     }
   },
   methods:{
+    url(endpoint){
+      return process.env.VUE_APP_SERVICE_URL + this.endpoints[endpoint]
+    },
     test_image(image){
       this.isLoading = true
       this.$image2base64(image)
@@ -74,7 +82,7 @@ export default {
                 "question":"demo",
                 "image": base64Image
               }
-              this.$http.post("http://localhost:5000/assessImage", body).then(
+              this.$http.post(this.url("assessImage"), body).then(
                 function success(response){
                   console.log(response)
                   this.isLoading = false
@@ -93,13 +101,6 @@ export default {
               this.isLoading = false
           }
       )
-    },
-    test(x){
-      console.log(x)
-      console.log(this.$refs.myFiles.files[0])
-      this.$http.get('http://localhost:5000/heartbeat').then(response => {
-        console.log(response.body)
-      });
     }
   }
 }
