@@ -19,14 +19,12 @@
       <div class="card-header w-100">
         <h4 class="m-0">Try it out!</h4>
       </div>
-
-      <div class="card-block flex-col card-img col-md-8 col-lg-5">
+      <div class="card-block flex-col card-img col-sm-10 col-md-8 col-lg-6 p-0">
         <img v-bind:src="demo.image" class="card-img" alt="image not found">
         <button class="w-100 btn btn-primary" v-on:click="test_demo_image()">Submit image as answer</button>
       </div>
 
-      <div class="card-block p-3 flex-col flex-fill col-md-4 col-lg-7">
-        <!-- flex-wrap col-sm-3 col-md-4 col-lg-6 -->
+      <div class="card-block p-3 flex-col flex-fill col-md-4 col-lg-6">
         Submit the image to see whether the answer is correct.
         <hr>
         <h5>Expected answer:</h5>
@@ -36,7 +34,16 @@
           {{demo.result}}
         </div>
       </div>
-      
+    </div>
+    <div class="card m-4 flex-row flex-wrap">
+      <div class="card-header w-100">
+        <h4 class="m-0">Upload your own answer</h4>
+      </div>
+      <div class="card-block flex-col card-img col-sm-10 col-md-8 col-lg-6 p-0">
+          <vue-base64-file-upload
+          input-class=""
+          image-class="card-img"/>
+        </div>
     </div>
   </div>
 </template>
@@ -107,12 +114,12 @@ export default {
                 function success(response){
                   console.log(response)
                   this.isLoading = false
-                  demo.result = response
+                  this.demo.result = response.body.matches.join(" ")
                 },
                 function error(e){
                   console.error(e)
                   this.isLoading = false
-                  demo.result = null
+                  this.demo.result = null
                 }
               )
           }
@@ -121,6 +128,7 @@ export default {
           (error) => {
               console.log(error);
               this.isLoading = false
+              alert('sorry, something went wrong')
           }
       )
     },
@@ -128,9 +136,6 @@ export default {
       var response = null
       this.addTemplate(this.demo.template)
       response = this.test_image(this.demo.image, this.demo.template.question)
-      if (!response){
-        alert('sorry, something went wrong')
-      }
     }
   }
 }
