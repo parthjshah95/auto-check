@@ -6,7 +6,7 @@
     </div>
     <router-view/> -->
     <nav class="navbar navbar-dark bg-dark">
-      <a class="navbar-brand">Auto Assessor</a>
+      <h3 class="m-2" v-bind:class="[alive? 'service_alive': 'service_dead']">Auto Assessor</h3>
     </nav>
     <loading :active.sync="isLoading" 
     :can-cancel="false" 
@@ -21,8 +21,8 @@
       </div>
 
       <div class="card-block flex-col card-img col-md-8 col-lg-5">
-        <img v-bind:src="demo_image" class="card-img" alt="image not found">
-        <button class="w-100 btn btn-primary" v-on:click="test_image(demo_image)">Submit image as answer</button>
+        <img v-bind:src="demo.image" class="card-img" alt="image not found">
+        <button class="w-100 btn btn-primary" v-on:click="test_demo_image()">Submit image as answer</button>
       </div>
 
       <div class="card-block p-3 flex-col flex-fill col-md-4 col-lg-7">
@@ -30,10 +30,10 @@
         Submit the image to see whether the answer is correct.
         <hr>
         <h5>Expected answer:</h5>
-        "History is a coherent account of the significant past events in the progress of human culture."
-        <div v-if="results.card_1">
+          {{demo.template.answer}}
+        <div v-if="demo.result">
           <h5 class="mt-3">We found following words in your answer:</h5>
-          {{results.card_1}}
+          {{demo.result}}
         </div>
       </div>
       
@@ -55,12 +55,17 @@ export default {
   },
   data(){
     return {
-      demo_image : demo_image,
+      alive:false,
+      demo: {
+        image: demo_image,
+        result: null,
+        template: {
+          "question": "demo",
+          "answer": "History is a coherent account of the significant past events in the progress of human culture."
+        }
+      },
       isLoading: false,
       fullPage: true,
-      results:{
-        card_1 : null
-      },
       endpoints: {
         heartbeat: "/heartbeat",
         assessImage: "/assessImage",
@@ -72,25 +77,42 @@ export default {
     url(endpoint){
       return process.env.VUE_APP_SERVICE_URL + this.endpoints[endpoint]
     },
-    test_image(image){
+    heartbeat(){
+      this.$http.get(this.url("heartbeat")).then(
+        function success(response){this.alive = true},
+        function failure(response){this.alive = false}
+      )
+    },
+    addTemplate(template){
+      function success(response){
+        console.log(response)
+      }
+      function failure(response){
+        console.log(response)
+      }
+      this.$http.post(this.url("addTemplate"), template).then(success, failure)
+    },
+    test_image(image, question){
+      console.log("sending demo image..")
       this.isLoading = true
       this.$image2base64(image)
       .then(
           (response) => {
               var base64Image = response
               var body = {
-                "question":"demo",
+                "question": question,
                 "image": base64Image
               }
               this.$http.post(this.url("assessImage"), body).then(
                 function success(response){
                   console.log(response)
                   this.isLoading = false
+                  demo.result = response
                 },
                 function error(e){
                   console.error(e)
-                  alert('sorry, something went wrong')
                   this.isLoading = false
+                  demo.result = null
                 }
               )
           }
@@ -101,6 +123,14 @@ export default {
               this.isLoading = false
           }
       )
+    },
+    test_demo_image(){
+      var response = null
+      this.addTemplate(this.demo.template)
+      response = this.test_image(this.demo.image, this.demo.template.question)
+      if (!response){
+        alert('sorry, something went wrong')
+      }
     }
   }
 }
@@ -116,8 +146,10 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
 }
-nav {
-  color: white;
+.service_alive {
+  color: lightblue;
 }
-
+.service_dead{
+  color: lightgray;
+}
 </style>
