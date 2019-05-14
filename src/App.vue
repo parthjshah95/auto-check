@@ -20,18 +20,18 @@
         <h4 class="m-0">Try it out!</h4>
       </div>
       <div class="card-block flex-col card-img col-sm-10 col-md-8 col-lg-6 p-0">
-        <img v-bind:src="demo.image" class="card-img" alt="image not found">
-        <button class="w-100 btn btn-primary" v-on:click="test_demo_image()">Submit image as answer</button>
+        <img v-bind:src="demo.image_file" class="card-img" alt="image not found">
+        <button class="w-100 btn btn-primary" v-on:click="test(demo)">Submit image as answer</button>
       </div>
 
       <div class="card-block p-3 flex-col flex-fill col-md-4 col-lg-6">
         Submit the image on the left to see whether the answer is correct.
         <hr>
         <h5>Expected answer:</h5>
-          {{demo.template.answer}}
+        <blockquote>{{demo.template.answer}}</blockquote>
         <div v-if="demo.result">
           <h5 class="mt-3">We found following words in your answer:</h5>
-          {{demo.result}}
+          <blockquote>{{demo.result}}</blockquote>
         </div>
       </div>
     </div>
@@ -39,11 +39,24 @@
       <div class="card-header w-100">
         <h4 class="m-0">Upload your own answer</h4>
       </div>
-      <div class="card-block flex-col card-img col-sm-10 col-md-8 col-lg-6 p-0">
-          <vue-base64-file-upload
-          input-class=""
+      <div class="card-block flex-col card-img col-sm-10 col-md-8 col-lg-6 p-0 border-right">
+        <vue-base64-file-upload
+          @load="on_image_upload"
+          @file="on_image_select"
+          input-class="w-auto m-3"
           image-class="card-img"/>
+        <button class="btn btn-primary w-auto m-2" v-on:click="test(uploaded)">Submit</button>
+      </div>
+      <div class="card-block p-3 flex-col flex-fill col-md-4 col-lg-6">
+        Write the same answer as above on a piece <br/>of paper (including some mistakes if you want to test) <br/>and submit a photograph.
+        <hr/>
+        <div v-if="uploaded.result">
+          <h5 class="mt-3">We found following words in your answer:</h5>
+          <blockquote>{{uploaded.result}}</blockquote>
         </div>
+      </div>
+    </div>
+    <div class="footer">
     </div>
   </div>
 </template>
@@ -60,16 +73,28 @@ export default {
   components: {
     Loading, VueBase64FileUpload
   },
+  created(){
+    this.convert_demo_to_b64()
+    this.heartbeat()
+  },
   data(){
+    var template = {
+      "question": "demo",
+      "answer": "History is a coherent account of the significant past events in the progress of human culture."
+    }
     return {
       alive:false,
       demo: {
-        image: demo_image,
+        image_file: demo_image,
+        image: null,
         result: null,
-        template: {
-          "question": "demo",
-          "answer": "History is a coherent account of the significant past events in the progress of human culture."
-        }
+        template: template
+      },
+      uploaded: {
+        image_file: null,
+        image: null,
+        result: null,
+        template: template
       },
       isLoading: false,
       fullPage: true,
@@ -84,6 +109,14 @@ export default {
     url(endpoint){
       return process.env.VUE_APP_SERVICE_URL + this.endpoints[endpoint]
     },
+    convert_demo_to_b64(){
+      this.$image2base64(demo_image)
+      .then(
+          (response) => {
+              this.demo.image = response
+          }
+      )
+    },
     heartbeat(){
       this.$http.get(this.url("heartbeat")).then(
         function success(response){this.alive = true},
@@ -92,50 +125,46 @@ export default {
     },
     addTemplate(template){
       function success(response){
-        console.log(response)
       }
       function failure(response){
         console.log(response)
       }
-      this.$http.post(this.url("addTemplate"), template).then(success, failure)
+      
     },
-    test_image(image, question){
-      console.log("sending demo image..")
+    test(testGroup){
+      function error(e){
+        console.error(e)
+        this.isLoading = false
+        alert('sorry, something went wrong')
+      }
       this.isLoading = true
-      this.$image2base64(image)
-      .then(
-          (response) => {
-              var base64Image = response
-              var body = {
-                "question": question,
-                "image": base64Image
-              }
-              this.$http.post(this.url("assessImage"), body).then(
-                function success(response){
-                  console.log(response)
-                  this.isLoading = false
-                  this.demo.result = response.body.matches.join(" ")
-                },
-                function error(e){
-                  console.error(e)
-                  this.isLoading = false
-                  this.demo.result = null
-                }
-              )
-          }
-      )
-      .catch(
-          (error) => {
-              console.log(error);
-              this.isLoading = false
-              alert('sorry, something went wrong')
-          }
-      )
+      this.$http.post(this.url("addTemplate" ), testGroup.template).then(function sendImage(){
+        var body = {
+          "question": testGroup.template.question,
+          "image": testGroup.image
+        }
+        this.$http.post(this.url("assessImage"), body).then(
+          function success(response){
+            console.log(response)
+            this.isLoading = false
+            testGroup.result = response.body.matches.join(" ")
+          },
+          error
+        )
+      }, error)
+      
+      
     },
-    test_demo_image(){
-      var response = null
-      this.addTemplate(this.demo.template)
-      response = this.test_image(this.demo.image, this.demo.template.question)
+    // test(testGroup){
+      // this.addTemplate(testGroup.template)
+      // this.testImage(testGroup.image, testGroup.template.question, testGroup.result)
+    // },
+    on_image_upload(image_uri){
+      var image_b64 = image_uri.split(",")[1]
+      this.uploaded.image = image_b64
+    },
+    on_image_select(file){
+      this.uploaded.image_file = file
     }
   }
 }
