@@ -17,6 +17,7 @@ with open("docs/CNAME", "w+") as c:
 print("done")
 print(dash, "deploying to github pages", dots, dash)
 os.system("git add -A")
-os.system("git commit -m 'deployed on " + now + "'")
+print("git commit -m 'deployed on {now}'".format(now=now))
+os.system()
 os.system("git push")
 print(dash, "completed deployment process", dash)
