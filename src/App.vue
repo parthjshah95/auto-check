@@ -6,14 +6,14 @@
     </div>
     <router-view/> -->
     <nav class="navbar navbar-dark bg-dark">
-      <h3 class="m-2" v-bind:class="[alive? 'service_alive': 'service_dead']">Auto Assessor</h3>
+      <h3 class="m-2" v-bind:class="[alive? 'service_alive': 'service_dead']">Auto Check</h3>
     </nav>
     <loading :active.sync="isLoading" 
     :can-cancel="false" 
     :is-full-page="fullPage"></loading>
     <div class="m-5 ml-10 mr-10">
-      <h5>Automatic checking of answer papers</h5>
-      The Auto-assessor can automatically evaluate a student's answer paper through <br> <b>handwriting recognition</b> and a dynamic knowledge base. 
+      <h5>Automatic assessment of answer papers</h5>
+      Auto-check can automatically evaluate a student's answer paper using <br> machine learning, handwriting recognition and a dynamic knowledge base. 
     </div>
     <div class="card m-4 flex-row flex-wrap">
       <div class="card-header w-100">
@@ -25,7 +25,7 @@
       </div>
 
       <div class="card-block p-3 flex-col flex-fill col-md-4 col-lg-6">
-        Submit the image to see whether the answer is correct.
+        Submit the image on the left to see whether the answer is correct.
         <hr>
         <h5>Expected answer:</h5>
           {{demo.template.answer}}
