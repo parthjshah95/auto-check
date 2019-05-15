@@ -6,7 +6,7 @@
     </div>
     <router-view/> -->
     <nav class="navbar navbar-dark bg-dark">
-      <h3 class="m-2" v-bind:class="[alive? 'service_alive': 'service_dead']">Auto Check</h3>
+      <h3 class="m-2" :class="[alive? 'service_alive': 'service_dead']">Auto Check</h3>
     </nav>
     <loading :active.sync="isLoading" 
     :can-cancel="false" 
@@ -20,7 +20,7 @@
         <h4 class="m-0">Try it out!</h4>
       </div>
       <div class="card-block flex-col card-img col-sm-10 col-md-8 col-lg-6 p-0">
-        <img v-bind:src="demo.image_file" class="card-img" alt="image not found">
+        <img :src="demo.image_file" class="card-img" alt="image not found">
         <button class="m-3 btn btn-primary" v-on:click="test(demo)">Submit image as answer</button>
       </div>
 
@@ -30,12 +30,7 @@
         <h5>Expected answer:</h5>
         <blockquote>{{demo.template.answer}}</blockquote>
         <hr/>
-        <div v-if="demo.result">
-          <h6 class="mt-3 text-muted">Raw detections:</h6>
-          <blockquote class="text-muted">{{demo.result.detected_words.join(" ")}}</blockquote>
-          <h5 class="mt-3 result-match">Words matching with the expected answer:</h5>
-          <blockquote class="result-match">{{demo.result.matches.join(" ")}}</blockquote>
-        </div>
+        <result v-if="demo.result" :result="demo.result"/>
       </div>
     </div>
     <div class="card m-4 flex-row flex-wrap">
@@ -54,12 +49,7 @@
       <div class="card-block p-3 flex-col flex-fill col-md-4 col-lg-6">
         Write the same answer as above on a piece <br/>of paper (including some mistakes if you want to test) <br/>and submit a photograph.
         <hr/>
-        <div v-if="uploaded.result">
-          <h6 class="mt-3 text-muted">Raw detections:</h6>
-          <blockquote class="text-muted">{{uploaded.result.detected_words.join(" ")}}</blockquote>
-          <h5 class="mt-3 result-match">Words matching with the expected answer:</h5>
-          <blockquote class="result-match">{{uploaded.result.matches.join(" ")}}</blockquote>
-        </div>
+        <result v-if="uploaded.result" :result="uploaded.result"/>
       </div>
     </div>
     <div class="footer">
@@ -72,12 +62,12 @@ import demo_image from "@/assets/1_cropped.jpg";
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 import VueBase64FileUpload from 'vue-base64-file-upload';
-// import Result from './components/Result';
+import Result from './components/Result';
 
 export default {
   name: "app",
   components: {
-    Loading, VueBase64FileUpload
+    Loading, VueBase64FileUpload, Result
   },
   created(){
     this.convert_demo_to_b64()
@@ -194,8 +184,5 @@ export default {
 }
 .img-input{
   box-shadow: 0px 2px 1px 20px #ccc;
-}
-.result-match{
-  color: darkgreen
 }
 </style>
