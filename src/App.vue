@@ -43,7 +43,8 @@
         <vue-base64-file-upload
           @load="on_image_upload"
           @file="on_image_select"
-          input-class="w-auto m-3"
+          placeholder="Choose file to upload"
+          input-class="w-auto m-3 border shadow-sm"
           image-class="card-img"/>
         <button class="btn btn-primary w-auto m-2" v-on:click="test(uploaded)">Submit</button>
       </div>
@@ -185,5 +186,8 @@ export default {
 }
 .service_dead{
   color: lightgray;
+}
+.img-input{
+  box-shadow: 0px 2px 1px 20px #ccc;
 }
 </style>
