@@ -21,7 +21,7 @@
       </div>
       <div class="card-block flex-col card-img col-sm-10 col-md-8 col-lg-6 p-0">
         <img v-bind:src="demo.image_file" class="card-img" alt="image not found">
-        <button class="w-100 btn btn-primary" v-on:click="test(demo)">Submit image as answer</button>
+        <button class="m-3 btn btn-primary" v-on:click="test(demo)">Submit image as answer</button>
       </div>
 
       <div class="card-block p-3 flex-col flex-fill col-md-4 col-lg-6">
@@ -29,9 +29,12 @@
         <hr>
         <h5>Expected answer:</h5>
         <blockquote>{{demo.template.answer}}</blockquote>
+        <hr/>
         <div v-if="demo.result">
-          <h5 class="mt-3">We found following words in your answer:</h5>
-          <blockquote>{{demo.result}}</blockquote>
+          <h6 class="mt-3 text-muted">Raw detections:</h6>
+          <blockquote class="text-muted">{{demo.result.detected_words.join(" ")}}</blockquote>
+          <h5 class="mt-3 result-match">Words matching with the expected answer:</h5>
+          <blockquote class="result-match">{{demo.result.matches.join(" ")}}</blockquote>
         </div>
       </div>
     </div>
@@ -52,8 +55,10 @@
         Write the same answer as above on a piece <br/>of paper (including some mistakes if you want to test) <br/>and submit a photograph.
         <hr/>
         <div v-if="uploaded.result">
-          <h5 class="mt-3">We found following words in your answer:</h5>
-          <blockquote>{{uploaded.result}}</blockquote>
+          <h6 class="mt-3 text-muted">Raw detections:</h6>
+          <blockquote class="text-muted">{{uploaded.result.detected_words.join(" ")}}</blockquote>
+          <h5 class="mt-3 result-match">Words matching with the expected answer:</h5>
+          <blockquote class="result-match">{{uploaded.result.matches.join(" ")}}</blockquote>
         </div>
       </div>
     </div>
@@ -67,7 +72,7 @@ import demo_image from "@/assets/1_cropped.jpg";
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 import VueBase64FileUpload from 'vue-base64-file-upload';
-
+// import Result from './components/Result';
 
 export default {
   name: "app",
@@ -148,7 +153,7 @@ export default {
           function success(response){
             console.log(response)
             this.isLoading = false
-            testGroup.result = response.body.matches.join(" ")
+            testGroup.result = response.body
           },
           error
         )
@@ -189,5 +194,8 @@ export default {
 }
 .img-input{
   box-shadow: 0px 2px 1px 20px #ccc;
+}
+.result-match{
+  color: darkgreen
 }
 </style>
