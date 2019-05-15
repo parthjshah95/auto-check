@@ -25,6 +25,6 @@ with open("version.txt") as v_file:
 print("version", v_string_new)
 print(dash, "deploying to github pages", dots, dash)
 os.system("git add .")
-os.system("git commit -m " + v_string_new)
+os.system("git commit -m release_v" + v_string_new)
 os.system("git push")
 print(dash, "completed deployment process", dash)
