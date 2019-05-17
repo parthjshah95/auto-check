@@ -9,9 +9,9 @@
       <h3 class="m-2" :class="[alive? 'service_alive': 'service_dead']">Auto Check</h3>
       <div class="nav justify-content-center">
         <img class="nav-item icons m-2" src="@/assets/mail_icon.svg">
-        <a class="m-2" style="color:white">parthjshah95@gmail.com</a>
+        <a class="m-2" style="color:white; cursor:text">parthjshah95@gmail.com</a>
         <div style="height:40px;width:0.5px;" class="bg-light"></div>
-        <a class="m-2" style="color:white">nmabhi42@gmail.com</a>
+        <a class="m-2" style="color:white; cursor:text">nmabhi42@gmail.com</a>
         <img class="nav-item icons m-2" src="@/assets/phone_icon.svg">
         <a class="m-2" style="color:white">+91 8879501780</a>
       </div>
