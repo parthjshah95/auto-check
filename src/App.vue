@@ -139,21 +139,26 @@ export default {
         this.isLoading = false
         alert('sorry, something went wrong')
       }
-      this.isLoading = true
-      this.$http.post(this.url("addTemplate" ), testGroup.template).then(function sendImage(){
-        var body = {
-          "question": testGroup.template.question,
-          "image": testGroup.image
-        }
-        this.$http.post(this.url("assessImage"), body).then(
-          function success(response){
-            console.log(response)
-            this.isLoading = false
-            testGroup.result = response.body
-          },
-          error
-        )
-      }, error)
+      if (!alive){
+        alert("Sorry, the service is not available currently.\nKindly try again after some time.\nIf the problem persists, please contact the creators.")
+      } else {
+        this.isLoading = true
+        this.$http.post(this.url("addTemplate" ), testGroup.template).then(function sendImage(){
+          var body = {
+            "question": testGroup.template.question,
+            "image": testGroup.image
+          }
+          this.$http.post(this.url("assessImage"), body).then(
+            function success(response){
+              console.log(response)
+              this.isLoading = false
+              testGroup.result = response.body
+            },
+            error
+          )
+        }, error)
+      }
+      
       
       
     },
