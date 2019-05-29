@@ -139,7 +139,7 @@ export default {
         this.isLoading = false
         alert('sorry, something went wrong')
       }
-      if (!alive){
+      if (!this.alive){
         alert("Sorry, the service is not available currently.\nKindly try again after some time.\nIf the problem persists, please contact the creators.")
       } else {
         this.isLoading = true
