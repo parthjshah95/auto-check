@@ -60,11 +60,27 @@
         <result v-if="uploaded.result" :result="uploaded.result"/>
       </div>
     </div>
+    <div class="card m-4 flex-row flex-wrap">
+      <div class="card-header w-100">
+        <h4 class="m-0">Math</h4>
+      </div>
+      <div class="card-block flex-col card-img col-sm-10 col-md-8 col-lg-6 p-0">
+        <img :src="math.image_file" class="card-img" alt="image not found">
+        <button class="m-3 btn btn-primary" v-on:click="test(math)">Submit image</button>
+      </div>
+
+      <div class="card-block p-3 flex-col flex-fill col-md-4 col-lg-6">
+        We have added support for recognizing math symbols too.
+        <hr/>        
+        <blockquote v-if="math.result" >{{math.result.detected_words}}</blockquote>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import demo_image from "@/assets/1_cropped.jpg";
+import math_image from "@/assets/Maths_cropped.jpg";
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
 import VueBase64FileUpload from 'vue-base64-file-upload';
@@ -76,13 +92,17 @@ export default {
     Loading, VueBase64FileUpload, Result
   },
   created(){
-    this.convert_demo_to_b64()
+    this.convert_images_to_b64()
     this.heartbeat()
   },
   data(){
     var template = {
       "question": "demo",
       "answer": "History is a coherent account of the significant past events in the progress of human culture."
+    }
+    var math_template = {
+      question: "math",
+      answer: "\\frac { \\sqrt { x ^ { 2 } + 4 ^ { 2 } } } { z ^ { 2 } } + \\sqrt { a ^ { 2 } + b ^ { 2 } }"
     }
     return {
       alive:false,
@@ -98,6 +118,13 @@ export default {
         result: null,
         template: template
       },
+      math: {
+        image_file: math_image,
+        image: null,
+        result: null,
+        template: math_template,
+        category: "math"
+      },
       isLoading: false,
       fullPage: true,
       endpoints: {
@@ -111,12 +138,18 @@ export default {
     url(endpoint){
       return process.env.VUE_APP_SERVICE_URL + this.endpoints[endpoint]
     },
-    convert_demo_to_b64(){
+    convert_images_to_b64(){
       this.$image2base64(demo_image)
       .then(
           (response) => {
-              this.demo.image = response
+            this.demo.image = response
           }
+      )
+      this.$image2base64(math_image)
+      .then(
+        (response) => {
+          this.math.image = response
+        }
       )
     },
     heartbeat(){
@@ -146,7 +179,8 @@ export default {
         this.$http.post(this.url("addTemplate" ), testGroup.template).then(function sendImage(){
           var body = {
             "question": testGroup.template.question,
-            "image": testGroup.image
+            "image": testGroup.image,
+            "category": testGroup.category? testGroup.category: "general"
           }
           this.$http.post(this.url("assessImage"), body).then(
             function success(response){
