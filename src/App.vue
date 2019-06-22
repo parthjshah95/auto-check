@@ -81,12 +81,20 @@
       <h5 class="card-divider-horizontal" >OR</h5>
       <div class="card-block flex-col card-img col-sm-10 col-md-8 col-lg-6 p-0 border-right">
         <vue-base64-file-upload
-          @load="on_image_upload"
-          @file="on_image_select"
+          @load="on_image_upload_math"
+          @file="on_image_select_math"
           placeholder="Choose file to upload"
           input-class="w-auto m-3 border shadow-sm"
           image-class="card-img"/>
-        <button class="btn btn-primary w-auto m-2" v-on:click="test(uploaded)">Submit</button>
+        <button class="btn btn-primary w-auto m-2" v-on:click="test(math_upload)">Submit</button>
+      </div>
+      <div class="card-block p-3 flex-col flex-fill col-md-4 col-lg-6">
+        <p><i>Temporary limitation:</i> Math api needs zoomed in, well cropped images to work well</p>
+        <hr/>    
+        <div v-if="math_upload.result">
+          <h5>detections:</h5>
+          <blockquote>{{math_upload.result.detected_words}}</blockquote>
+        </div>
       </div>
     </div>
   </div>
@@ -139,11 +147,12 @@ export default {
         template: math_template,
         category: "math"
       },
-      math_uploaded: {
+      math_upload: {
         image_file: null,
         image: null,
         result: null,
-        template: math_template
+        template: math_template,
+        category: "math"
       },
       isLoading: false,
       fullPage: true,
@@ -226,6 +235,13 @@ export default {
     },
     on_image_select(file){
       this.uploaded.image_file = file
+    },
+    on_image_upload_math(image_uri){
+      var image_b64 = image_uri.split(",")[1]
+      this.math_upload.image = image_b64
+    },
+    on_image_select_math(file){
+      this.math_upload.image_file = file
     }
   }
 }
