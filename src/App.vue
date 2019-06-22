@@ -71,8 +71,22 @@
 
       <div class="card-block p-3 flex-col flex-fill col-md-4 col-lg-6">
         We have added support for recognizing math symbols too.
-        <hr/>        
-        <blockquote v-if="math.result" >{{math.result.detected_words}}</blockquote>
+        <hr/>    
+        <div v-if="math.result">
+          <h5>detections:</h5>
+          <blockquote>{{math.result.detected_words}}</blockquote>
+        </div>
+      </div>
+
+      <h5 class="card-divider-horizontal" >OR</h5>
+      <div class="card-block flex-col card-img col-sm-10 col-md-8 col-lg-6 p-0 border-right">
+        <vue-base64-file-upload
+          @load="on_image_upload"
+          @file="on_image_select"
+          placeholder="Choose file to upload"
+          input-class="w-auto m-3 border shadow-sm"
+          image-class="card-img"/>
+        <button class="btn btn-primary w-auto m-2" v-on:click="test(uploaded)">Submit</button>
       </div>
     </div>
   </div>
@@ -124,6 +138,12 @@ export default {
         result: null,
         template: math_template,
         category: "math"
+      },
+      math_uploaded: {
+        image_file: null,
+        image: null,
+        result: null,
+        template: math_template
       },
       isLoading: false,
       fullPage: true,
@@ -233,5 +253,13 @@ export default {
 .icons{
   height: 20px;
 }
-
+$div-border: 0.25px solid lightgray;
+.card-divider-horizontal{
+  padding: 5px;
+  margin:0px;
+  width:100%; 
+  text-align: centre; 
+  border-top: $div-border;
+  border-bottom: $div-border;
+}
 </style>
