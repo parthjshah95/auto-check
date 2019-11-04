@@ -13,7 +13,7 @@
         <div style="height:40px;width:0.5px;" class="bg-light"></div>
         <a class="m-2" style="color:white; cursor:text">nmabhi42@gmail.com</a>
         <img class="nav-item icons m-2" src="@/assets/phone_icon.svg">
-        <a class="m-2" style="color:white">+91 8879501780</a>
+        <a class="m-2" style="color:white">+1 (352)327-1943</a>
       </div>
     </nav>
     <loading :active.sync="isLoading" 
@@ -89,7 +89,6 @@
         <button class="btn btn-primary w-auto m-2" v-on:click="test(math_upload)">Submit</button>
       </div>
       <div class="card-block p-3 flex-col flex-fill col-md-4 col-lg-6">
-        <p><i>Temporary limitation:</i> Math api needs zoomed in, well cropped images to work well</p>
         <hr/>    
         <div v-if="math_upload.result">
           <h5>detections:</h5>

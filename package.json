@@ -7,14 +7,13 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "deploy": "python deploy.py"
-    
   },
   "dependencies": {
     "bootstrap": "^4.3.1",
     "core-js": "^2.6.5",
     "image-to-base64": "^2.0.1",
     "jquery": "^3.3.1",
-    "npm": "^6.9.0",
+    "npm": "^6.12.1",
     "popper.js": "^1.15.0",
     "vue": "^2.6.6",
     "vue-base64-file-upload": "^1.0.4",
