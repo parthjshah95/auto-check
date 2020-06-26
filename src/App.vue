@@ -203,6 +203,7 @@ export default {
       if (!this.alive){
         alert("Sorry, the service is not available currently.\nKindly try again after some time.\nIf the problem persists, please contact the creators.")
       } else {
+        console.log("Hi Tirth");
         this.isLoading = true
         this.$http.post(this.url("addTemplate" ), testGroup.template).then(function sendImage(){
           var body = {
